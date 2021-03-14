@@ -41,40 +41,51 @@ class TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      height: 53.0,
       padding: padding,
-      child: Container(
-        height: 40,
-        child: TextFormField(
-          controller: textController,
-          focusNode: focusNode,
-          onFieldSubmitted: onFieldSubmitted,
-          onChanged: onChanged,
-          autofocus: autoFocus,
-          textInputAction: inputAction,
-          obscureText: this.isObscure,
-          // maxLength: 25,
-          maxLines: this.maxLine,
-          keyboardType: this.inputType,
-          style: Theme.of(context).textTheme.body1,
-          decoration: InputDecoration(
-              hintText: this.hint,
-              fillColor: HexColor('#B3B6BD').withOpacity(0.2),
-              border: OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(4.0),
-                  ),
-                  borderSide: BorderSide(
-                      color: HexColor('#414A5A').withOpacity(0.2), width: 0.5)),
-              isDense: true, // Added this
-              contentPadding: EdgeInsets.all(8),
-              filled: true,
-              hintStyle:
-                  Theme.of(context).textTheme.body1.copyWith(color: hintColor),
-              errorText: errorText,
-              counterText: '',
-              icon: this.isIcon ? Icon(this.icon, color: iconColor) : null),
-        ),
+      child: TextFormField(
+        controller: textController,
+        focusNode: focusNode,
+        onFieldSubmitted: onFieldSubmitted,
+        onChanged: onChanged,
+        autofocus: autoFocus,
+        textInputAction: inputAction,
+        obscureText: this.isObscure,
+        // maxLength: 25,
+        maxLines: this.maxLine,
+        keyboardType: this.inputType,
+        style: Theme.of(context).textTheme.body1,
+        decoration: InputDecoration(
+            hintText: this.hint,
+            fillColor: HexColor('#B3B6BD').withOpacity(0.2),
+            border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(4.0),
+                ),
+                borderSide: BorderSide(
+                    color: HexColor('#414A5A').withOpacity(0.2), width: 0.5)),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(4.0),
+                ),
+                borderSide: BorderSide(
+                    color: HexColor('#414A5A').withOpacity(0.2), width: 0.5)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(4.0),
+                ),
+                borderSide: BorderSide(
+                    color: HexColor('#414A5A').withOpacity(0.2), width: 0.5)),
+            isDense: true, // Added this
+            contentPadding:
+                EdgeInsets.only(left: 8, top: 18, bottom: 8, right: 8),
+            filled: true,
+            hintStyle:
+                Theme.of(context).textTheme.body1.copyWith(color: hintColor),
+            errorText: errorText,
+            counterText: '',
+            icon: this.isIcon ? Icon(this.icon, color: iconColor) : null),
       ),
     );
   }

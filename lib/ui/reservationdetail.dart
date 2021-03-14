@@ -108,7 +108,7 @@ class _ReservationDetailScreenState
       TextFieldWidget(
         padding: EdgeInsets.only(left: 20, right: 20, top: 6),
         hint: '',
-        inputType: TextInputType.emailAddress,
+        inputType: TextInputType.text,
         iconColor: Colors.black54,
         textController: firstNameCon,
         inputAction: TextInputAction.next,
@@ -129,7 +129,7 @@ class _ReservationDetailScreenState
       TextFieldWidget(
         padding: EdgeInsets.only(left: 20, right: 20, top: 6),
         hint: '',
-        inputType: TextInputType.emailAddress,
+        inputType: TextInputType.text,
         iconColor: Colors.black54,
         textController: lastNameCon,
         inputAction: TextInputAction.next,
@@ -172,7 +172,7 @@ class _ReservationDetailScreenState
       TextFieldWidget(
         padding: EdgeInsets.only(left: 20, right: 20, top: 6),
         hint: '',
-        inputType: TextInputType.emailAddress,
+        inputType: TextInputType.phone,
         iconColor: Colors.black54,
         textController: phoneCon,
         inputAction: TextInputAction.next,
@@ -196,16 +196,22 @@ class _ReservationDetailScreenState
           alignment: Alignment.topLeft,
           child: SizedBox(
             width: double.infinity,
-            child: FlatButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0),
+            height: 53,
+            child: Center(
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                color: HexColor('#B3B6BD').withOpacity(0.2),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'HHQ - Prachuap Khiri Khan, Thailand',
+                    style: TextStyle(color: HexColor('#414A5A'), fontSize: 16),
+                  ),
+                ),
+                onPressed: () {},
               ),
-              color: HexColor('#B3B6BD').withOpacity(0.2),
-              child: Text(
-                'HHQ - Prachuap Khiri Khan, Thailand',
-                style: TextStyle(color: HexColor('#414A5A'), fontSize: 16),
-              ),
-              onPressed: () {},
             ),
           ),
         ),
@@ -225,14 +231,18 @@ class _ReservationDetailScreenState
           alignment: Alignment.topLeft,
           child: SizedBox(
             width: double.infinity,
+            height: 53,
             child: FlatButton(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4.0),
               ),
               color: HexColor('#B3B6BD').withOpacity(0.2),
-              child: Text(
-                'HHP - Hong Kong, Hong Kong',
-                style: TextStyle(color: HexColor('#414A5A'), fontSize: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'HHP - Hong Kong, Hong Kong',
+                  style: TextStyle(color: HexColor('#414A5A'), fontSize: 16),
+                ),
               ),
               onPressed: () {},
             ),
@@ -254,6 +264,7 @@ class _ReservationDetailScreenState
           alignment: Alignment.topLeft,
           child: SizedBox(
             width: double.infinity,
+            height: 53,
             child: FlatButton(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4.0),
@@ -292,18 +303,38 @@ class _ReservationDetailScreenState
         child:
             Align(alignment: Alignment.topLeft, child: Text('Special request')),
       ),
-      TextFieldWidget(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 6, bottom: 20),
-        hint: '',
-        inputType: TextInputType.emailAddress,
-        iconColor: Colors.black54,
-        textController: specialRequestCon,
-        inputAction: TextInputAction.next,
-        autoFocus: false,
-        isIcon: false,
-        maxLine: null,
-        onChanged: (value) {},
-        onFieldSubmitted: (value) {},
+      Container(
+        margin: EdgeInsets.only(left: 20, right: 20, top: 6, bottom: 20),
+        height: 6 * 24.0,
+        child: TextField(
+          controller: specialRequestCon,
+          maxLines: 6,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(4.0),
+                ),
+                borderSide: BorderSide(
+                    color: HexColor('#414A5A').withOpacity(0.2), width: 0.5)),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(4.0),
+                ),
+                borderSide: BorderSide(
+                    color: HexColor('#414A5A').withOpacity(0.2), width: 0.5)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(4.0),
+                ),
+                borderSide: BorderSide(
+                    color: HexColor('#414A5A').withOpacity(0.2), width: 0.5)),
+            hintText: "",
+            fillColor: HexColor('#B3B6BD').withOpacity(0.2),
+            filled: true,
+          ),
+          onChanged: (value) {},
+          onSubmitted: (value) {},
+        ),
       )
     ];
   }
@@ -329,14 +360,24 @@ class _ReservationDetailScreenState
   Widget _buildAgreeTermButton() {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 20, top: 34, bottom: 25),
-      child: Container(
-        child: Row(
-          children: [
-            Icon(Icons.check_box, color: HexColor('#5D9AF7')),
-            SizedBox(width: 13),
-            Text('Accept payment term and cancellation policy')
-          ],
+      child: GestureDetector(
+        child: Container(
+          child: Row(
+            children: [
+              agreeTerm
+                  ? Icon(Icons.check_box, color: HexColor('#5D9AF7'))
+                  : Icon(Icons.check_box_outline_blank,
+                      color: HexColor('#5D9AF7')),
+              SizedBox(width: 13),
+              Text('Accept payment term and cancellation policy')
+            ],
+          ),
         ),
+        onTap: () {
+          setState(() {
+            agreeTerm = !agreeTerm;
+          });
+        },
       ),
     );
   }

@@ -90,7 +90,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     onPressed: () => Navigator.pop(context),
                   ),
                 )),
-            expandedHeight: 322,
+            expandedHeight: 428,
             collapsedHeight: 80,
             flexibleSpace: Stack(
               children: [
@@ -183,7 +183,7 @@ class _DetailScreenState extends State<DetailScreen> {
     return Positioned(
       child: FadeOnScroll(
         scrollController: scrollController,
-        fullOpacityOffset: 322,
+        fullOpacityOffset: 428,
         zeroOpacityOffset: 0,
         child: Container(
           height: 60,
@@ -341,34 +341,31 @@ class _DetailScreenState extends State<DetailScreen> {
             child: Image.asset(
               'assets/pexels-sourav-mishra-2710043/pexels-sourav-mishra-2710043.png',
               fit: BoxFit.cover,
-              height: 186,
+              height: 248,
             ),
           )),
       Padding(
         padding: const EdgeInsets.only(left: 20.0, top: 16, right: 20),
         child: Row(
           children: [
-            Flexible(
+            Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(4)),
-                child: Image.asset('assets/images/car.jpg',
-                    fit: BoxFit.cover, height: 88),
+                child: Image.asset('assets/images/car.jpg', fit: BoxFit.cover),
               ),
             ),
             SizedBox(width: 15),
-            Flexible(
+            Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(4)),
-                child: Image.asset('assets/images/car2.jpg',
-                    fit: BoxFit.cover, height: 88),
+                child: Image.asset('assets/images/car2.jpg', fit: BoxFit.cover),
               ),
             ),
             SizedBox(width: 15),
-            Flexible(
+            Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(4)),
-                child: Image.asset('assets/images/car3.jpg',
-                    fit: BoxFit.cover, height: 88),
+                child: Image.asset('assets/images/car3.jpg', fit: BoxFit.cover),
               ),
             ),
           ],
