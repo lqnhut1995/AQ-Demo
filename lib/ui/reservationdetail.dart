@@ -1,6 +1,11 @@
+import 'package:demo/bloc/my_form_bloc.dart';
+import 'package:demo/models/phone.dart';
 import 'package:demo/textfield_widget.dart';
+import 'package:demo/ui/select_place.dart';
 import 'package:demo/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 
 import 'base_navigation.dart';
 
@@ -17,49 +22,92 @@ class _ReservationDetailScreenState
   TextEditingController emailNameCon = TextEditingController();
   TextEditingController phoneCon = TextEditingController();
   TextEditingController specialRequestCon = TextEditingController();
-
+  MyFormCubit _bloc;
   bool agreeTerm = false;
+
+  String pickupPlace = 'HHQ - Prachuap Khiri Khan, Thailand';
+  String dropoffPlace = 'HHP - Hong Kong, Hong Kong';
+
+  final _emailFocusNode = FocusNode();
+  final _firstNameFocusNode = FocusNode();
+  final _lastNameFocusNode = FocusNode();
+  final _phoneFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    _bloc = MyFormCubit();
+    _emailFocusNode.addListener(() {
+      if (!_emailFocusNode.hasFocus) {
+        context.read<MyFormBloc>().add(EmailUnfocused());
+      }
+    });
+
+    _firstNameFocusNode.addListener(() {
+      if (!_firstNameFocusNode.hasFocus) {
+        context.read<MyFormBloc>().add(FirstNameUnfocused());
+      }
+    });
+
+    _lastNameFocusNode.addListener(() {
+      if (!_lastNameFocusNode.hasFocus) {
+        context.read<MyFormBloc>().add(LastNameUnfocused());
+      }
+    });
+
+    _phoneFocusNode.addListener(() {
+      if (!_phoneFocusNode.hasFocus) {
+        context.read<MyFormBloc>().add(PhoneUnfocused());
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: HexColor('#414A5A'),
-          title: Text(
-            'Reservation Detail',
-            style: TextStyle(
-                fontSize: 17, color: Colors.white, fontWeight: FontWeight.w300),
-          ),
-          leading: IconButton(
-            padding: new EdgeInsets.all(0.0),
-            color: Colors.white,
-            icon: new Icon(Icons.arrow_back, size: 24.0),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-        bottomNavigationBar: SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: RaisedButton(
-            color: Colors.blueGrey[800],
-            child: Text(
-              'SUBMIT',
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: HexColor('#414A5A'),
+            title: Text(
+              'Reservation Detail',
               style: TextStyle(
                   fontSize: 17,
                   color: Colors.white,
                   fontWeight: FontWeight.w300),
             ),
-            onPressed: () {},
+            leading: IconButton(
+              padding: new EdgeInsets.all(0.0),
+              color: Colors.white,
+              icon: new Icon(Icons.arrow_back, size: 24.0),
+              onPressed: () => Navigator.pop(context),
+            ),
           ),
-        ),
-        body: ListView(
-          children: [_buildBody()],
-        ));
+          bottomNavigationBar: SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: RaisedButton(
+              color: Colors.blueGrey[800],
+              child: Text(
+                'SUBMIT',
+                style: TextStyle(
+                    fontSize: 17,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w300),
+              ),
+              onPressed: () {},
+            ),
+          ),
+          body: ListView(
+            children: [_buildBody()],
+          )),
+    );
   }
 
   Widget _buildBody() {
@@ -105,17 +153,26 @@ class _ReservationDetailScreenState
         padding: const EdgeInsets.only(left: 20, top: 20),
         child: Align(alignment: Alignment.topLeft, child: Text('First Name')),
       ),
-      TextFieldWidget(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 6),
-        hint: '',
-        inputType: TextInputType.text,
-        iconColor: Colors.black54,
-        textController: firstNameCon,
-        inputAction: TextInputAction.next,
-        autoFocus: false,
-        isIcon: false,
-        onChanged: (value) {},
-        onFieldSubmitted: (value) {},
+      BlocBuilder<MyFormCubit, MyFormState>(
+        cubit: _bloc,
+        builder: (ctx, state) {
+          return TextFieldWidget(
+            padding: EdgeInsets.only(left: 20, right: 20, top: 6),
+            hint: '',
+            inputType: TextInputType.text,
+            iconColor: Colors.black54,
+            textController: firstNameCon,
+            inputAction: TextInputAction.next,
+            autoFocus: false,
+            isIcon: false,
+            onChanged: (value) {
+              _bloc.firstNameChanged(value);
+              // _bloc.add(FirstNameChanged(firstName: value));
+            },
+            onFieldSubmitted: (value) {},
+            errorText: state.firstName.invalid ? 'First Name is invalid' : null,
+          );
+        },
       )
     ];
   }
@@ -126,17 +183,26 @@ class _ReservationDetailScreenState
         padding: const EdgeInsets.only(left: 20, top: 10),
         child: Align(alignment: Alignment.topLeft, child: Text('Last Name')),
       ),
-      TextFieldWidget(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 6),
-        hint: '',
-        inputType: TextInputType.text,
-        iconColor: Colors.black54,
-        textController: lastNameCon,
-        inputAction: TextInputAction.next,
-        autoFocus: false,
-        isIcon: false,
-        onChanged: (value) {},
-        onFieldSubmitted: (value) {},
+      BlocBuilder<MyFormCubit, MyFormState>(
+        cubit: _bloc,
+        builder: (context, state) {
+          return TextFieldWidget(
+            padding: EdgeInsets.only(left: 20, right: 20, top: 6),
+            hint: '',
+            inputType: TextInputType.text,
+            iconColor: Colors.black54,
+            textController: lastNameCon,
+            inputAction: TextInputAction.next,
+            autoFocus: false,
+            isIcon: false,
+            onChanged: (value) {
+              _bloc.lastNameChanged(value);
+              // _bloc.add(LastNameChanged(lastName: value));
+            },
+            onFieldSubmitted: (value) {},
+            errorText: state.lastName.invalid ? 'Last Name is invalid' : null,
+          );
+        },
       )
     ];
   }
@@ -148,17 +214,26 @@ class _ReservationDetailScreenState
         child:
             Align(alignment: Alignment.topLeft, child: Text('Email address')),
       ),
-      TextFieldWidget(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 6),
-        hint: '',
-        inputType: TextInputType.emailAddress,
-        iconColor: Colors.black54,
-        textController: emailNameCon,
-        inputAction: TextInputAction.next,
-        autoFocus: false,
-        isIcon: false,
-        onChanged: (value) {},
-        onFieldSubmitted: (value) {},
+      BlocBuilder<MyFormCubit, MyFormState>(
+        cubit: _bloc,
+        builder: (_, state) {
+          return TextFieldWidget(
+            padding: EdgeInsets.only(left: 20, right: 20, top: 6),
+            hint: '',
+            inputType: TextInputType.emailAddress,
+            iconColor: Colors.black54,
+            textController: emailNameCon,
+            inputAction: TextInputAction.next,
+            autoFocus: false,
+            isIcon: false,
+            onChanged: (value) {
+              _bloc.emailChanged(value);
+              // _bloc.add(EmailChanged(email: value));
+            },
+            onFieldSubmitted: (value) {},
+            errorText: state.email.invalid ? 'Email is invalid' : null,
+          );
+        },
       )
     ];
   }
@@ -169,18 +244,27 @@ class _ReservationDetailScreenState
         padding: const EdgeInsets.only(left: 20, top: 10),
         child: Align(alignment: Alignment.topLeft, child: Text('Mobile phone')),
       ),
-      TextFieldWidget(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 6),
-        hint: '',
-        inputType: TextInputType.phone,
-        iconColor: Colors.black54,
-        textController: phoneCon,
-        inputAction: TextInputAction.next,
-        autoFocus: false,
-        isIcon: false,
-        onChanged: (value) {},
-        onFieldSubmitted: (value) {},
-      )
+      BlocBuilder<MyFormCubit, MyFormState>(
+        cubit: _bloc,
+        builder: (_, state) {
+          return TextFieldWidget(
+            padding: EdgeInsets.only(left: 20, right: 20, top: 6),
+            hint: '',
+            inputType: TextInputType.phone,
+            iconColor: Colors.black54,
+            textController: phoneCon,
+            inputAction: TextInputAction.next,
+            autoFocus: false,
+            isIcon: false,
+            onChanged: (value) {
+              _bloc.phoneChanged(value);
+              // _bloc.add(PhoneChanged(phone: value));
+            },
+            onFieldSubmitted: (value) {},
+            errorText: state.phone.invalid ? 'Phone is invalid' : null,
+          );
+        },
+      ),
     ];
   }
 
@@ -206,11 +290,22 @@ class _ReservationDetailScreenState
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'HHQ - Prachuap Khiri Khan, Thailand',
+                    pickupPlace,
                     style: TextStyle(color: HexColor('#414A5A'), fontSize: 16),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  final pickup = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SelectPlaceWidget(
+                            SelectPlaceType.PickUp, pickupPlace)),
+                  );
+                  if (pickup == null) return;
+                  setState(() {
+                    pickupPlace = pickup;
+                  });
+                },
               ),
             ),
           ),
@@ -240,11 +335,22 @@ class _ReservationDetailScreenState
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'HHP - Hong Kong, Hong Kong',
+                  dropoffPlace,
                   style: TextStyle(color: HexColor('#414A5A'), fontSize: 16),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                final dropoff = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SelectPlaceWidget(
+                          SelectPlaceType.DropOff, dropoffPlace)),
+                );
+                if (dropoff == null) return;
+                setState(() {
+                  dropoffPlace = dropoff;
+                });
+              },
             ),
           ),
         ),
@@ -384,10 +490,15 @@ class _ReservationDetailScreenState
 
   @override
   void dispose() {
+    _bloc.close();
     firstNameCon.dispose();
     lastNameCon.dispose();
     emailNameCon.dispose();
     phoneCon.dispose();
+    _emailFocusNode.dispose();
+    _firstNameFocusNode.dispose();
+    _lastNameFocusNode.dispose();
+    _phoneFocusNode.dispose();
     super.dispose();
   }
 }

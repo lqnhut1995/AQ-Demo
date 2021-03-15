@@ -42,7 +42,7 @@ class TextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 53.0,
+      height: errorText == null ? 53.0 : 73.0,
       padding: padding,
       child: TextFormField(
         controller: textController,

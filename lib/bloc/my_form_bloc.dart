@@ -22,15 +22,14 @@ class MyFormBloc extends Bloc<MyFormEvent, MyFormState> {
     if (event is EmailChanged) {
       final email = Email.dirty(event.email);
       yield state.copyWith(
-        email: email.valid ? email : Email.pure(event.email),
+        email: email,
         status: Formz.validate(
             [email, state.firstName, state.lastName, state.phone]),
       );
     } else if (event is FirstNameChanged) {
       final firstName = FirstName.dirty(event.firstName);
       yield state.copyWith(
-        firstName:
-            firstName.valid ? firstName : FirstName.pure(event.firstName),
+        firstName: firstName,
         status: Formz.validate(
             [state.email, firstName, state.lastName, state.phone]),
       );
@@ -51,7 +50,7 @@ class MyFormBloc extends Bloc<MyFormEvent, MyFormState> {
     } else if (event is LastNameChanged) {
       final lastName = LastName.dirty(event.lastName);
       yield state.copyWith(
-        lastName: lastName.valid ? lastName : LastName.pure(event.lastName),
+        lastName: lastName,
         status: Formz.validate(
             [state.email, state.firstName, lastName, state.phone]),
       );
@@ -65,7 +64,7 @@ class MyFormBloc extends Bloc<MyFormEvent, MyFormState> {
     } else if (event is PhoneChanged) {
       final phone = Phone.dirty(event.phone);
       yield state.copyWith(
-        phone: phone.valid ? phone : LastName.pure(event.phone),
+        phone: phone,
         status: Formz.validate(
             [state.email, state.firstName, state.lastName, phone]),
       );
@@ -94,5 +93,53 @@ class MyFormBloc extends Bloc<MyFormEvent, MyFormState> {
         yield state.copyWith(status: FormzStatus.submissionSuccess);
       }
     }
+  }
+}
+
+class MyFormCubit extends Cubit<MyFormState> {
+  MyFormCubit() : super(MyFormState());
+
+  emailChanged(String value) {
+    final email = Email.dirty(value);
+
+    emit(state.copyWith(
+      email: email,
+      status: Formz.validate(
+        [email, state.firstName, state.lastName, state.phone],
+      ),
+    ));
+  }
+
+  firstNameChanged(String value) {
+    final firstName = FirstName.dirty(value);
+
+    emit(state.copyWith(
+      firstName: firstName,
+      status: Formz.validate(
+        [state.email, firstName, state.lastName, state.phone],
+      ),
+    ));
+  }
+
+  lastNameChanged(String value) {
+    final lastName = LastName.dirty(value);
+
+    emit(state.copyWith(
+      lastName: lastName,
+      status: Formz.validate(
+        [state.email, state.firstName, lastName, state.phone],
+      ),
+    ));
+  }
+
+  phoneChanged(String value) {
+    final phone = Phone.dirty(value);
+
+    emit(state.copyWith(
+      phone: phone,
+      status: Formz.validate(
+        [state.email, state.firstName, state.lastName, phone],
+      ),
+    ));
   }
 }
